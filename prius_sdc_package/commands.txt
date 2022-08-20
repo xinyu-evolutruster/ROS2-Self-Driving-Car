@@ -1,0 +1,11 @@
+source install/setup.bash
+source ~/ros2_self_driving/ROS2SDC_VENV/bin/activate
+
+
+ros2 launch prius_sdc_package
+ros2 run prius_sdc_package recorder_node
+ros2 run prius_sdc_package driver_node
+
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+gazebo -s libgazebo_ros_factory.so
