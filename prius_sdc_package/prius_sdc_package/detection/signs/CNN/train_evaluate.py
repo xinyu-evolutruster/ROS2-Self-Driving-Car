@@ -181,7 +181,7 @@ def evaluate_model_on_image(data_dir, image_path="", image_label=None):
         print("Y shape is: {}".format(Y.shape))
         # evaluate the model
         score = model.evaluate(X, Y, verbose=0)
-        print("%s: %.2f%%" % (model.metrics_name[1], score[1] * 100))
+        print("%s: %.2f" % (model.metrics_name[1], score[1] * 100))
 
 def main():
     data_dir = os.path.join(ROOT, "data")

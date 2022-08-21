@@ -1,16 +1,17 @@
 import cv2
 from numpy import interp
 from .detection.lanes.lane_detection import detect_lanes
+from .detection.signs.sign_detection import detect_signs
 
 from .config import config
 
 class Control():
     def __init__(self):
         self._angle = 0.0
-        self._speed = 30.0
+        self._speed = 80.0
 
     def follow_lane(self, max_allowed_distance, distance, curvature):
-        self._speed = 30.0
+        self._speed = 80.0
         
         max_turn_angle = 90
         max_turn_angle_neg = -90
@@ -87,7 +88,11 @@ class Car():
         # resizing to minimize computation time
         img = cv2.resize(img, (320, 240))
 
+        img_orig = img.copy()
+
         distance, curvature, out_img = detect_lanes(img)
+        detect_signs(img_orig, out_img)
+
         current_state = [distance, curvature, out_img]
         
         angle_motor, speed_motor = self._control.drive(current_state)

@@ -2,7 +2,7 @@ from turtle import pos, position
 import cv2
 import math
 import numpy as np
-from .utils import calculate_distance
+from ..utils import calculate_distance
 from ...config import config
 
 # about opencv column and row organizations:

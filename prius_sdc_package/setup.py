@@ -6,11 +6,12 @@ package_name = 'prius_sdc_package'
 config_module = "prius_sdc_package/config"
 detection_module = "prius_sdc_package/detection"
 detection_lane_module = "prius_sdc_package/detection/lanes"
+detection_sign_module = "prius_sdc_package/detection/signs"
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name, config_module, detection_module, detection_lane_module],
+    packages=[package_name, config_module, detection_module, detection_lane_module, detection_sign_module],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),

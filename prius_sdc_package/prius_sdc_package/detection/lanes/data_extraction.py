@@ -2,7 +2,7 @@ from asyncio import proactor_events
 import cv2
 import numpy as np
 
-from .utils import cord_sort
+from ..utils import cord_sort
 from .lane_utils import find_lane_curvature
 
 from ...config import config

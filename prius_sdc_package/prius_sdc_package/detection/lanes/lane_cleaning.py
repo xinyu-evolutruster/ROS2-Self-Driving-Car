@@ -1,7 +1,7 @@
 import cv2
 import math
 import numpy as np
-from .utils import calculate_distance, cord_sort
+from ..utils import calculate_distance, cord_sort
 from .lane_utils import ret_lowest_edge_points
 
 from ...config import config
