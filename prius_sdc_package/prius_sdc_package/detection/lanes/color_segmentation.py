@@ -9,7 +9,7 @@ sat_white = 0
 # yellow regions
 hue_yellow_lower = 30
 hue_yellow_higher = 33
-lit_yellow = 160
+lit_yellow = 100
 sat_yellow = 0
 
 cur_frame = None
