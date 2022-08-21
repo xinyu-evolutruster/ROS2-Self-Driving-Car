@@ -121,3 +121,5 @@ def detect_signs(frame, frame_draw):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     sign_detection_and_tracking(gray, frame, frame_draw)
+
+    return sign_tracker.mode, sign_tracker.tracked_class

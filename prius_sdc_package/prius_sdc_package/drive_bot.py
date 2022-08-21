@@ -9,10 +9,30 @@ class Control():
     def __init__(self):
         self._angle = 0.0
         self._speed = 80.0
+        # cruise control variable
+        self._prev_mode = "detection"
+        self._increase_tire_speed_in_turns = False
 
-    def follow_lane(self, max_allowed_distance, distance, curvature):
-        self._speed = 80.0
+        self._class_to_speed = {
+            "speed_sign_30": 30,
+            "speed_sign_60": 60,
+            "speed_sign_90": 90,
+            "stop": 0
+        }
+
+    def follow_lane(self, max_allowed_distance, distance, curvature, mode, tracked_class):
+        # self._speed = 80.0
         
+        # cruise control speed adjusted to match road speed limit
+        if tracked_class != 0 and self._prev_mode == "tracking" and mode == "detection":
+            if tracked_class == "left_turn":
+                pass
+            else:
+                self._speed = self._class_to_speed[tracked_class]
+                if tracked_class == "stop":
+                    print("Stopping the car!!")
+        self._prev_mode = mode
+
         max_turn_angle = 90
         max_turn_angle_neg = -90
         required_turn_angle = 0
@@ -34,11 +54,18 @@ class Control():
         
         # handle max car turnablity
         self._angle = interp(required_turn_angle, [max_turn_angle_neg, max_turn_angle], [-45, 45])
+        if self._increase_tire_speed_in_turns and tracked_class != "left_turn":
+            if self._angle > 30:
+                car_speed_turn = interp(self._angle, [30, 45], [80, 100])
+                self._speed = car_speed_turn
+            elif self. _angle < -30:
+                car_speed_turn = interp(self._angle, [-45, -30], [100, 80])
+                self._speed = car_speed_turn
 
     def drive(self, current_state):
-        [distance, curvature, image] = current_state
+        [distance, curvature, image, mode, tracked_class] = current_state
         if distance != config.infinity and curvature != config.infinity:
-            self.follow_lane(int(image.shape[1] / 4), distance, curvature)
+            self.follow_lane(int(image.shape[1] / 4), distance, curvature, mode, tracked_class)
         else:
             self._speed = 0.0  # stop the car
         
@@ -91,9 +118,9 @@ class Car():
         img_orig = img.copy()
 
         distance, curvature, out_img = detect_lanes(img)
-        detect_signs(img_orig, out_img)
+        mode, tracked_class = detect_signs(img_orig, out_img)
 
-        current_state = [distance, curvature, out_img]
+        current_state = [distance, curvature, out_img, mode, tracked_class]
         
         angle_motor, speed_motor = self._control.drive(current_state)
 
