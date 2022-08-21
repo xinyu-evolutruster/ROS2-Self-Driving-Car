@@ -12,13 +12,18 @@ class Control():
         # cruise control variable
         self._prev_mode = "detection"
         self._increase_tire_speed_in_turns = False
-
         self._class_to_speed = {
             "speed_sign_30": 30,
             "speed_sign_60": 60,
             "speed_sign_90": 90,
             "stop": 0
         }
+        # navigate T-junction variable
+        self._prev_mode_left_turn = "detection"
+        self._left_turn_iterations = 0
+        self._frozen_angle = 0
+        self._detected_left_turn = False
+        self._activate_left_turn = False
 
     def follow_lane(self, max_allowed_distance, distance, curvature, mode, tracked_class):
         # self._speed = 80.0
@@ -62,13 +67,42 @@ class Control():
                 car_speed_turn = interp(self._angle, [-45, -30], [100, 80])
                 self._speed = car_speed_turn
 
+    def obey_left_turn(self, mode):
+        self._speed = 50
+
+        # car starts tracking left turn
+        if self._prev_mode_left_turn == "detection" and mode == "tracking":
+            self._prev_mode_left_turn = "tracking"
+            self._detected_left_turn = True
+        elif self._prev_mode_left_turn == "tracking" and mode == "detection":
+            self._detected_left_turn = False
+            self._activate_left_turn = True
+            # move left by 7 degree every 20th iteratinos after a few waiting
+            if self._left_turn_iterations % 20 == 0 and self._left_turn_iterations > 150:
+                self._frozen_angle = self._frozen_angle - 7
+            if self._left_turn_iterations == 350:
+                self._prev_mode_left_turn = "detection"
+                self._activate_left_turn = False
+                self._left_turn_iterations = 0
+                # self._frozen_angle = 0
+            self._left_turn_iterations += 1
+        # elif self._prev_mode_left_turn == "detection" and mode == "detection":
+        #     self._frozen_angle = 0
+        if self._activate_left_turn or self._detected_left_turn:
+            # follow a fixed route
+            self._angle = self._frozen_angle
+
     def drive(self, current_state):
         [distance, curvature, image, mode, tracked_class] = current_state
+        
         if distance != config.infinity and curvature != config.infinity:
             self.follow_lane(int(image.shape[1] / 4), distance, curvature, mode, tracked_class)
         else:
             self._speed = 0.0  # stop the car
-        
+
+        if tracked_class == "left_turn":
+            self.obey_left_turn(mode)
+
         # interpolating the angle and speed from real world to motor world
         angle_motor = interp(self._angle, [-45, 45], [0.5, -0.5])
         if self._speed != 0:

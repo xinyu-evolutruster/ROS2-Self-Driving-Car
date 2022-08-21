@@ -22,6 +22,7 @@ class Tracker:
         self.known_centers = []
         self.known_centers_confidence = []
         self.known_centers_classes_confidence = []
+        # self.sign_determined = False
 
         # init variables
         self.old_gray = 0

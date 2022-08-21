@@ -69,7 +69,8 @@ def sign_detection_and_tracking(gray, frame, frame_draw):
                             sign_tracker.known_centers_confidence[match_idx] += 1
                             sign_tracker.known_centers_classes_confidence[match_idx][sign_classes.index(sign)] += 1
                             # check if same sign detected 3 times
-                            if sign_tracker.known_centers_confidence[match_idx] > 4:
+                            if sign_tracker.known_centers_confidence[match_idx] > 10:
+                                sign_tracker.sign_determined = True
                                 max_value = max(sign_tracker.known_centers_classes_confidence[match_idx])
                                 max_index = sign_tracker.known_centers_classes_confidence[match_idx].index(max_value)
                                 print("========================================================")
