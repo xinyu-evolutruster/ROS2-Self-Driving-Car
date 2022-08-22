@@ -20,7 +20,7 @@ echo "#### [Step - 1] : Generate neg.txt from Training/Negative"
 echo "########################################################"
 
 echo 
-python -c "import utils;utils.generate_negative_description_file('Negative')"
+python3 -c "import utils;utils.generate_negative_description_file('Negative')"
 echo 
 read -p "Press enter to continue...."
 echo
@@ -31,7 +31,7 @@ echo "#### [Step - 2] : Annotating Positive images from Training/Positive"
 echo "###################################################################"
 
 echo 
-$OPENCV_PATH/opencv_annotation.exe -a=pos.txt -i=Positive
+$OPENCV_PATH/opencv_annotation -a=pos.txt -i=Positive
 echo 
 read -p "Press enter to continue..."
 echo
